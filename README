@@ -1,0 +1,22 @@
+rpn_calc_on_clojure
+===================
+
+The code in this repository represents my total sum of Clojure learning to date.
+
+The end result should be a RPN calculator service accessible through the network.
+
+Setup
+=====
+
+1. Get Java & Clojure
+
+2. Run the rpn.clj script through Clojure:
+   $ java -classpath $CLOJURE_JAR:$CLOJURE_CONTRIB_JAR clojure.lang.Script rpn.clj
+
+3. From another terminal, use netcat to send data:
+   $ echo "(+ 1 2 3) (- 4 5 6) 'quit" | nc 127.0.0.1 5001
+
+4. Read the results on-screen:
+   6
+   -7
+   Connection closed by client, closing socket

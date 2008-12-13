@@ -9,9 +9,17 @@
 (defn process [socket]
   (let [ in (java.io.PushbackReader. (make-reader (. socket getInputStream)))
          out (java.io.PrintWriter. (make-writer (. socket getOutputStream)))]
-    (. out println (eval (read in)))
-    (. out flush)
-    (. socket close)))
+    (loop []
+      (let [value (eval (read in))]
+        (if (= 'quit value)
+          (do
+            (. out println "Connection closed by client, closing socket")
+            (. out flush)
+            (. socket close))
+          (do
+            (. out println value)
+            (. out flush)
+            (recur)))))))
 
 (defn run []
   (println "accepting connections")

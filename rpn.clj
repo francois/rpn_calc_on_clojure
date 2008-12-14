@@ -14,9 +14,12 @@
         (println "STACK:\t" stack)
         (println "READ:\t" form)
         (cond
-          (number? form) (recur (conj stack form))
-          (= '+ form) (do
-            (recur (conj (rest (rest stack)) (reduce + (take 2 stack)))))
+          (number? form)
+            (recur (conj stack form))
+          (= 'drop form)
+            (recur (rest stack))
+          (= '+ form)
+            (recur (conj (rest (rest stack)) (reduce + (take 2 stack))))
           (= 'quit form) (do
             (. out println "Final stack:")
             (. out println (print-str (reverse stack)))

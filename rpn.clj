@@ -9,19 +9,22 @@
 (defn process [socket]
   (let [ in (java.io.PushbackReader. (make-reader (. socket getInputStream)))
          out (java.io.PrintWriter. (make-writer (. socket getOutputStream)))]
-    (loop []
-      (let [form (read in) value (eval form)]
+    (loop [stack ()]
+      (let [form (read in)]
+        (println "STACK:\t" stack)
         (println "READ:\t" form)
-        (println "WRITE:\t" value)
-        (if (= 'quit value)
-          (do
+        (cond
+          (number? form) (recur (conj stack form))
+          (= 'quit form) (do
+            (. out println "Final stack:")
+            (. out println (print-str (reverse stack)))
             (. out println "Connection closed by client, closing socket")
             (. out flush)
             (. socket close))
-          (do
-            (. out println value)
+          :else (do
+            (. out println "Syntax error: unrecognized form" form)
             (. out flush)
-            (recur)))))))
+            (. socket close)))))))
 
 (defn run []
   (println "accepting connections")

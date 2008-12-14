@@ -18,6 +18,8 @@
             (recur (conj stack form))
           (= 'drop form)
             (recur (rest stack))
+          (= '* form)
+            (recur (conj (rest (rest stack)) (reduce * (take 2 stack))))
           (= '+ form)
             (recur (conj (rest (rest stack)) (reduce + (take 2 stack))))
           (= 'quit form) (do
